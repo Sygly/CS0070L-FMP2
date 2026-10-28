@@ -1,0 +1,127 @@
+
+package com.mycompany.mp3;
+
+import java.util.Scanner;
+import java.util.Queue;
+import java.util.ArrayDeque;
+
+class Ticket {
+    int ticketNumber;
+    String customerName;
+    String request;
+
+    public Ticket(int ticketNumber, String customerName, String request) {
+        this.ticketNumber = ticketNumber;
+        this.customerName = customerName;
+        this.request = request;
+    }
+
+    public void display() {
+        System.out.println("Ticket " + ticketNumber
+                + " | Customer: " + customerName
+                + " | Request: " + request);
+    }
+}
+
+public class MP3 {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        Queue<Ticket> queue = new ArrayDeque<>();
+
+        int nextTicketNumber = 1;
+        int choice = -1;
+
+        do {
+            System.out.println("\n===== CUSTOMER SERVICE QUEUE =====");
+            System.out.println("1. New Ticket");
+            System.out.println("2. Serve Next");
+            System.out.println("3. Preview Next");
+            System.out.println("4. Show Queue");
+            System.out.println("0. Exit");
+            System.out.print("Enter choice: ");
+
+            if (!sc.hasNextInt()) {
+                System.out.println("Invalid choice!");
+                sc.nextLine();
+                continue;
+            }
+
+            choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+
+                case 1:
+                    System.out.print("Enter customer name: ");
+                    String name = sc.nextLine().trim();
+
+                    System.out.print("Enter request: ");
+                    String request = sc.nextLine().trim();
+
+                    if (name.isEmpty() || request.isEmpty()) {
+                        System.out.println(
+                                "Error: Name and request cannot be empty.");
+                    } else {
+                        Ticket newTicket = new Ticket(
+                                nextTicketNumber, name, request);
+
+                        queue.offer(newTicket);
+
+                        System.out.println("Ticket "
+                                + nextTicketNumber + " created.");
+
+                        nextTicketNumber++;
+                    }
+                    break;
+
+                case 2:
+                    Ticket served = queue.poll();
+
+                    if (served == null) {
+                        System.out.println("No pending tickets.");
+                    } else {
+                        System.out.println("Ticket "
+                                + served.ticketNumber + " served.");
+                        served.display();
+                    }
+                    break;
+
+                case 3:
+                    Ticket next = queue.peek();
+
+                    if (next == null) {
+                        System.out.println("No pending tickets.");
+                    } else {
+                        System.out.println("Next ticket:");
+                        next.display();
+                    }
+                    break;
+
+                case 4:
+                    if (queue.isEmpty()) {
+                        System.out.println("No pending tickets.");
+                    } else {
+                        System.out.println("\n===== PENDING TICKETS =====");
+
+                        for (Ticket ticket : queue) {
+                            ticket.display();
+                        }
+                    }
+                    break;
+
+                case 0:
+                    System.out.println("Exiting program...");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice!");
+                    break;
+            }
+
+        } while (choice != 0);
+
+        sc.close();
+    }
+}
